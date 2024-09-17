@@ -13,6 +13,13 @@ async function hashPassword(password) {
     return await bcrypt.hash(password, saltRounds);
 }
 
+function isAdmin(req,res,next){
+    if(req.auth && req.auth.role === 'admin'){
+        return next();
+    }
+    return res.status(403).json({message: 'Acesso negado. Apenas administradores tem acesso a essa rota'});
+}
+
 // Rotas CRUD para Paciente
 router.post('/pacientes', async (req, res) => {
     const { nome, CPF, sexo, dataNascimento, estadoCivil, email, senha } = req.body;
@@ -24,14 +31,14 @@ router.post('/pacientes', async (req, res) => {
     res.json(paciente);
 });
   
-router.get('/pacientes', requireAuth, async (req, res) => {
+router.get('/pacientes', requireAuth, isAdmin, async (req, res) => {
 const pacientes = await prisma.paciente.findMany({
     select: { id: true, nome: true, CPF: true, sexo: true, dataNascimento: true, estadoCivil: true }
 });
 res.json(pacientes);
 });
 
-router.get('/pacientes/:id', requireAuth, async (req, res) => {
+router.get('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
 const { id } = req.params;
 const paciente = await prisma.paciente.findUnique({ 
     where: { id: parseInt(id) },
@@ -40,7 +47,7 @@ const paciente = await prisma.paciente.findUnique({
 res.json(paciente);
 });
 
-router.put('/pacientes/:id', requireAuth, async (req, res) => {
+router.put('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
 const { id } = req.params;
 const { nome, sexo, dataNascimento, estadoCivil } = req.body;
 
@@ -56,7 +63,7 @@ try {
 }
 });
 
-router.put('/pacientes/:id/delete', requireAuth, async (req, res) => {
+router.put('/pacientes/:id/delete', requireAuth, isAdmin, async (req, res) => {
 const { id } = req.params;
 try {
     await prisma.paciente.update({
@@ -68,5 +75,42 @@ try {
     res.status(400).json({ message: 'Erro ao deletar paciente', error });
 }
 });
+
+router.get('/pacientes/:id/consultas', requireAuth, async (req, res) => {
+    const { id } = req.params;
+
+    if (req.auth.role !== 'paciente' || req.auth.id !== parseInt(id)) {
+        return res.status(403).json({ message: 'Acesso negado, apenas pacientes podem acessar suas consultas.' });
+    }
+
+    try {
+        const consultas = await prisma.consulta.findMany({
+            where: { idPaciente: parseInt(id) },
+            include: { medico: true }
+        });
+        res.json(consultas);
+    } catch (error) {
+        res.status(400).json({ message: 'Erro ao buscar consultas', error });
+    }
+});
+
+router.get('/pacientes/:id/exames', requireAuth, async (req, res) => {
+    const { id } = req.params;
+
+    if (req.auth.role !== 'paciente' || req.auth.id !== parseInt(id)) {
+        return res.status(403).json({ message: 'Acesso negado, apenas pacientes podem acessar seus exames.' });
+    }
+
+    try {
+        const exames = await prisma.exame.findMany({
+            where: { idPaciente: parseInt(id) },
+            include: { medico: true }
+        });
+        res.json(exames);
+    } catch (error) {
+        res.status(400).json({ message: 'Erro ao buscar exames', error });
+    }
+});
+
 
 module.exports = router;
