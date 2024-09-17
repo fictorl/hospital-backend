@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Paciente {
-  id             Int      @id @default(autoincrement())
+  id             String   @id @default(uuid())
   nome           String
   CPF            String   @unique
   sexo           String
@@ -29,7 +29,7 @@ model Paciente {
 }
 
 model Medico {
-  id             Int      @id @default(autoincrement())
+  id             String   @id @default(uuid())
   nome           String
   CRI            String   @unique
   sexo           String
@@ -44,7 +44,7 @@ model Medico {
 }
 
 model Administrador {
-  id             Int      @id @default(autoincrement())
+  id             String   @id @default(uuid())
   nome           String
   email          String   @unique
   senha          String
@@ -52,7 +52,7 @@ model Administrador {
 }
 
 model Consulta {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   dataHorario DateTime
   idMedico    Int
   idPaciente  Int
@@ -61,7 +61,7 @@ model Consulta {
 }
 
 model Exame {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   dataHorario DateTime
   nomeDoExame String
   idPaciente  Int

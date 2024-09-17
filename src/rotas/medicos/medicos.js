@@ -50,7 +50,7 @@ router.get('/medicos/:id', requireAuth, isAdmin, async (req, res) => {
     const { id } = req.params;
     try {
         const medico = await prisma.medico.findUnique({
-            where: { id: parseInt(id) },
+            where: { id: id },
             select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
         });
         res.json(medico);
@@ -64,7 +64,7 @@ router.put('/medicos/:id', requireAuth, isAdmin, async (req, res) => {
     const { nome, sexo, dataNascimento, especialidade } = req.body;
     try {
         const medico = await prisma.medico.update({
-            where: { id: parseInt(id) },
+            where: { id: id },
             data: { nome, sexo, dataNascimento, especialidade },
             select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
         });
@@ -78,7 +78,7 @@ router.delete('/medicos/:id', requireAuth, isAdmin, async (req, res) => {
     const { id } = req.params;
     try {
         await prisma.medico.update({
-            where: { id: parseInt(id) },
+            where: { id: id },
             data: { deleted: true }
         });
         res.json({ message: 'Médico deletado logicamente' });
@@ -90,13 +90,13 @@ router.delete('/medicos/:id', requireAuth, isAdmin, async (req, res) => {
 router.get('/medicos/:id/consultas', requireAuth, async (req, res) => {
     const { id } = req.params;
 
-    if (req.auth.role !== 'medico' || req.auth.id !== parseInt(id)) {
+    if (req.auth.role !== 'medico' || req.auth.id !== id) {
         return res.status(403).json({ message: 'Acesso negado, somente médicos têm acesso a suas consultas.' });
     }
 
     try {
         const consultas = await prisma.consulta.findMany({
-            where: { idMedico: parseInt(id) },
+            where: { idMedico: id },
             include: { paciente: true }
         });
         res.json(consultas);

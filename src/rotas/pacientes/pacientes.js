@@ -50,7 +50,7 @@ router.get('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
     const { id } = req.params;
     try {
         const paciente = await prisma.paciente.findUnique({
-            where: { id: parseInt(id) },
+            where: { id: id },
             select: { id: true, nome: true, CPF: true, sexo: true, dataNascimento: true, estadoCivil: true }
         });
         res.json(paciente);
@@ -65,7 +65,7 @@ router.put('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
 
     try {
         const paciente = await prisma.paciente.update({
-            where: { id: parseInt(id) },
+            where: { id: id },
             data: { nome, sexo, dataNascimento, estadoCivil },
             select: { id: true, nome: true, CPF: true, sexo: true, dataNascimento: true, estadoCivil: true }
         });
@@ -79,7 +79,7 @@ router.delete('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
     const { id } = req.params;
     try {
         await prisma.paciente.update({
-            where: { id: parseInt(id) },
+            where: { id: id },
             data: { deleted: true }
         });
         res.json({ message: 'Paciente deletado logicamente' });
@@ -91,13 +91,13 @@ router.delete('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
 router.get('/pacientes/:id/consultas', requireAuth, async (req, res) => {
     const { id } = req.params;
 
-    if (req.auth.role !== 'paciente' || req.auth.id !== parseInt(id)) {
+    if (req.auth.role !== 'paciente' || req.auth.id !== id) {
         return res.status(403).json({ message: 'Acesso negado, apenas pacientes podem acessar suas consultas.' });
     }
 
     try {
         const consultas = await prisma.consulta.findMany({
-            where: { idPaciente: parseInt(id) },
+            where: { idPaciente: id },
             include: { medico: true }
         });
         res.json(consultas);
@@ -109,13 +109,13 @@ router.get('/pacientes/:id/consultas', requireAuth, async (req, res) => {
 router.get('/pacientes/:id/exames', requireAuth, async (req, res) => {
     const { id } = req.params;
 
-    if (req.auth.role !== 'paciente' || req.auth.id !== parseInt(id)) {
+    if (req.auth.role !== 'paciente' || req.auth.id !== id) {
         return res.status(403).json({ message: 'Acesso negado, apenas pacientes podem acessar seus exames.' });
     }
 
     try {
         const exames = await prisma.exame.findMany({
-            where: { idPaciente: parseInt(id) },
+            where: { idPaciente: id },
             include: { medico: true }
         });
         res.json(exames);
