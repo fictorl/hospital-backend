@@ -21,7 +21,7 @@ async function hashPassword(password) {
 }
 
 // Rotas CRUD para Médico
-router.post('/medicos', requireAuth, isAdmin, async (req, res) => {
+router.post('/medicos', requireAuth, async (req, res) => {
     const { nome, CRI, sexo, dataNascimento, especialidade, email, senha } = req.body;
     try {
         const hashedPassword = await hashPassword(senha);

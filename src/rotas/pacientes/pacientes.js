@@ -21,7 +21,7 @@ function isAdmin(req, res, next) {
 }
 
 // Rotas CRUD para Paciente
-router.post('/pacientes', requireAuth, isAdmin, async (req, res) => {
+router.post('/pacientes', requireAuth, async (req, res) => {
     const { nome, CPF, sexo, dataNascimento, estadoCivil, email, senha } = req.body;
     const hashedPassword = await hashPassword(senha);
     try {
