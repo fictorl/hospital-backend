@@ -25,5 +25,9 @@
     "prisma": "^5.19.1",
     "tsup": "^6.7.0",
     "tsx": "^4.19.1"
-  }
+  },
+  "scripts": {
+  "seed": "node seed.js"
+}
+
 }
