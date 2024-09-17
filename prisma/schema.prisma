@@ -33,40 +33,23 @@ model Medico {
   nome           String
   CRI            String   @unique
   sexo           String
-  dataNascimento DateTime
-  especialidade  String
-  email          String   @unique
-  senha          String
-  deleted        Boolean  @default(false)
   consultas      Consulta[]
   exames         Exame[]
-  role           String   @default("medico") // Diferencia médicos de pacientes e admins
-}
-
-model Administrador {
-  id             String   @id @default(uuid())
-  nome           String
-  email          String   @unique
-  senha          String
-  role           String   @default("admin") // Definir o administrador como admin
 }
 
 model Consulta {
-  id          String   @id @default(uuid())
-  dataHorario DateTime
-  idMedico    Int
-  idPaciente  Int
-  medico      Medico   @relation(fields: [idMedico], references: [id])
-  paciente    Paciente @relation(fields: [idPaciente], references: [id])
+  id             String   @id @default(uuid())
+  idMedico       String
+  idPaciente     String
+  medico         Medico   @relation(fields: [idMedico], references: [id])
+  paciente       Paciente @relation(fields: [idPaciente], references: [id])
 }
 
 model Exame {
-  id          String   @id @default(uuid())
-  dataHorario DateTime
-  nomeDoExame String
-  idPaciente  Int
-  idMedico    Int
-  resultado   String
-  medico      Medico   @relation(fields: [idMedico], references: [id])
-  paciente    Paciente @relation(fields: [idPaciente], references: [id])
+  id             String   @id @default(uuid())
+  idMedico       String
+  idPaciente     String
+  resultado      String
+  medico         Medico   @relation(fields: [idMedico], references: [id])
+  paciente       Paciente @relation(fields: [idPaciente], references: [id])
 }
