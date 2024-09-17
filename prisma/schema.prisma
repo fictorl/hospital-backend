@@ -25,6 +25,7 @@ model Paciente {
   deleted        Boolean  @default(false)
   consultas      Consulta[]
   exames         Exame[]
+  role           String   @default("paciente") // Novo campo para diferenciar os níveis de usuário
 }
 
 model Medico {
@@ -39,6 +40,7 @@ model Medico {
   deleted        Boolean  @default(false)
   consultas      Consulta[]
   exames         Exame[]
+  role           String   @default("medico") // Diferencia médicos de pacientes e admins
 }
 
 model Administrador {
@@ -46,24 +48,25 @@ model Administrador {
   nome           String
   email          String   @unique
   senha          String
+  role           String   @default("admin") // Definir o administrador como admin
 }
 
 model Consulta {
-  id         Int      @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   dataHorario DateTime
-  idMedico   Int
-  idPaciente Int
-  medico     Medico   @relation(fields: [idMedico], references: [id])
-  paciente   Paciente @relation(fields: [idPaciente], references: [id])
+  idMedico    Int
+  idPaciente  Int
+  medico      Medico   @relation(fields: [idMedico], references: [id])
+  paciente    Paciente @relation(fields: [idPaciente], references: [id])
 }
 
 model Exame {
-  id             Int      @id @default(autoincrement())
-  dataHorario    DateTime
-  nomeDoExame    String
-  idPaciente     Int
-  idMedico       Int
-  resultado      String
-  medico         Medico   @relation(fields: [idMedico], references: [id])
-  paciente       Paciente @relation(fields: [idPaciente], references: [id])
+  id          Int      @id @default(autoincrement())
+  dataHorario DateTime
+  nomeDoExame String
+  idPaciente  Int
+  idMedico    Int
+  resultado   String
+  medico      Medico   @relation(fields: [idMedico], references: [id])
+  paciente    Paciente @relation(fields: [idPaciente], references: [id])
 }
