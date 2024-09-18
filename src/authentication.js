@@ -12,13 +12,13 @@ async function authenticate(req, res) {
     // Procurar em todas as entidades (Paciente, Medico, Admin)
     const user = await prisma.paciente.findUnique({
       where: { email },
-      select: { id: true, senha: true, deleted: true, email: true }
+      select: { id: true, senha: true, deleted: true, email: true, role: true }
     }) || await prisma.medico.findUnique({
       where: { email },
-      select: { id: true, senha: true, deleted: true, email: true }
+      select: { id: true, senha: true, deleted: true, email: true, role: true }
     }) || await prisma.administrador.findUnique({
       where: { email },
-      select: { id: true, senha: true, email: true }
+      select: { id: true, senha: true, email: true, role: true }
     });
 
     if (!user || user.deleted) {
@@ -32,7 +32,7 @@ async function authenticate(req, res) {
     }
 
     // Gerar token JWT com o papel do usuário
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, SECRET_KEY, {
       expiresIn: '1h'
     });
 

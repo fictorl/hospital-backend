@@ -21,7 +21,7 @@ function isAdmin(req, res, next) {
 }
 
 // Rotas CRUD para Paciente
-router.post('/pacientes', requireAuth, async (req, res) => {
+router.post('/pacientes', async (req, res) => {
     const { nome, CPF, sexo, dataNascimento, estadoCivil, email, senha } = req.body;
     const hashedPassword = await hashPassword(senha);
     try {
@@ -109,8 +109,12 @@ router.get('/pacientes/:id/consultas', requireAuth, async (req, res) => {
 router.get('/pacientes/:id/exames', requireAuth, async (req, res) => {
     const { id } = req.params;
 
-    if (req.auth.role !== 'paciente' || req.auth.id !== id) {
-        return res.status(403).json({ message: 'Acesso negado, apenas pacientes podem acessar seus exames.' });
+    console.log(req.auth.role);
+    console.log(req.auth.id);
+    console.log(id);
+
+    if (req.auth.role !== "paciente" || String(req.auth.id) !== id) {
+        return res.status(403).json({ message: `Acesso negado, apenas pacientes podem acessar seus exames.${req.auth.id}` });
     }
 
     try {

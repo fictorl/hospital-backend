@@ -33,14 +33,21 @@ model Medico {
   nome           String
   CRI            String   @unique
   sexo           String
+  especialidade  String   
+  dataNascimento DateTime
+  email          String   @unique
+  senha          String
+  deleted        Boolean  @default(false)
   consultas      Consulta[]
   exames         Exame[]
+  role           String   @default("medico") // Novo campo para diferenciar os níveis de usuário
 }
 
 model Consulta {
   id             String   @id @default(uuid())
   idMedico       String
   idPaciente     String
+  dataHorario DateTime
   medico         Medico   @relation(fields: [idMedico], references: [id])
   paciente       Paciente @relation(fields: [idPaciente], references: [id])
 }
@@ -50,6 +57,23 @@ model Exame {
   idMedico       String
   idPaciente     String
   resultado      String
+  dataHorario    DateTime
+  nomeExame      String
   medico         Medico   @relation(fields: [idMedico], references: [id])
   paciente       Paciente @relation(fields: [idPaciente], references: [id])
+}
+
+model Administrador {
+  id            String   @id @default(uuid())
+  nome          String
+  email         String   @unique
+  senha         String
+  role          String   @default("administrador") // Novo campo para diferenciar os níveis de usuário
+}
+
+model loglogin {
+  id            String   @id @default(uuid())
+  nome          String
+  dataHorario   DateTime @default(now())
+  role          String  
 }
