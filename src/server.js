@@ -18,7 +18,12 @@ app.post('/login/paciente', authenticate, (req, res) => {
   
 // Rota de login para médicos
 app.post('/login/medico', authenticate, (req, res) => {
-res.json({ message: 'Login de médico bem-sucedido', user: req.user });
+  res.json({ message: 'Login de médico bem-sucedido', user: req.user });
+});
+
+// Rota de login para admins
+app.post('/login/admin',authenticate, (req,res) => {
+  res.json({message: 'Login de admin bem-sucedido', user: req.user})
 });
 
 const PORT = Number(process.env.PORT) || 3000;
