@@ -74,6 +74,6 @@ model Administrador {
 model loglogin {
   id            String   @id @default(uuid())
   nome          String
-  dataHorario   DateTime @default(now())
+  dataHorario   String 
   role          String  
 }

@@ -29,7 +29,7 @@ async function authenticate(req, res) {
     // Verificar se a senha está correta
     const isPasswordValid = await bcrypt.compare(senha, user.senha);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Senha incorreta' });
+      return res.status(401).json({ message: 'Email ou senha incorreta' });
     }
 
     // Gerar token JWT com o papel do usuário
