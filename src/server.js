@@ -1,4 +1,5 @@
 const express = require('express');
+const corsMiddleware = require("./corsConfig")
 const medicoRoutes = require('./rotas/medicos/medicos');
 const pacienteRoutes = require('./rotas/pacientes/pacientes');
 
@@ -8,6 +9,7 @@ const app = express();
 
 
 app.use(express.json());
+app.use(corsMiddleware);
 app.use(medicoRoutes);
 app.use(pacienteRoutes);
 
@@ -25,6 +27,11 @@ app.post('/login/medico', authenticate, (req, res) => {
 app.post('/login/admin',authenticate, (req,res) => {
   res.json({message: 'Login de admin bem-sucedido', user: req.user})
 });
+
+app.get("/test", (req, res) => {
+  console.log("ola")
+  res.send("Ola")
+})
 
 const PORT = Number(process.env.PORT) || 3000;
 app.listen(PORT, () => {
