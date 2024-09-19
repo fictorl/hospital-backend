@@ -5,7 +5,9 @@ const bcrypt = require('bcrypt');
 const expressJwt = require('express-jwt');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+    log: ['query', 'info', 'warn', 'error']
+  });
 const requireAuth = expressJwt.expressjwt({ secret: SECRET_KEY, algorithms: ['HS256'] });
 
 function isAdmin(req, res, next) {
