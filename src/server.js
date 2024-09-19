@@ -28,7 +28,7 @@ app.post('/login/admin',authenticate, (req,res) => {
   res.json({message: 'Login de admin bem-sucedido', user: req.user})
 });
 
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
   console.log("ola")
   res.send("Ola")
 })
