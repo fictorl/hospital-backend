@@ -41,7 +41,7 @@ async function authenticate(req, res) {
     adicionarLog(user); // Adiciona o log de login
 
     // Retornar a resposta de sucesso com o token
-    res.json({ message: 'Login bem-sucedido', token });
+    res.json({ message: 'Login bem-sucedido', token, role:user.role });
   } catch (error) {
     res.status(500).json({ message: 'Erro ao autenticar', error });
   }

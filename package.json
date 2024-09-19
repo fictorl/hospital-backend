@@ -6,9 +6,9 @@
     "node": ">=14.0.0"
   },
   "scripts": {
-    "dev":  "concurrently \"nodemon --watch src --exec tsx ./src/server.js\" \"npx prisma studio\"",
+    "dev":  "concurrently \"nodemon --watch src --exec tsx ./src/server.js\" \"npx prisma studio\" \"node ./src/seed\"",
     "build": "tsup src",
-    "seed": "node seed.js"
+    "seed": "node ./src/seed"
   },
   "author": "",
   "license": "ISC",

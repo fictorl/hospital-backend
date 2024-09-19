@@ -14,19 +14,9 @@ app.use(medicoRoutes);
 app.use(pacienteRoutes);
 
 // Rota de login para pacientes
-app.post('/login/paciente', authenticate, (req, res) => {
+app.post('/login', authenticate, (req, res) => {
     res.json({ message: 'Login de paciente bem-sucedido', user: req.user });
   });
-  
-// Rota de login para médicos
-app.post('/login/medico', authenticate, (req, res) => {
-  res.json({ message: 'Login de médico bem-sucedido', user: req.user });
-});
-
-// Rota de login para admins
-app.post('/login/admin',authenticate, (req,res) => {
-  res.json({message: 'Login de admin bem-sucedido', user: req.user})
-});
 
 app.get("/", (req, res) => {
   console.log("ola")
