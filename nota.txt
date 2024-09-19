@@ -3,3 +3,5 @@ npx prisma migrate dev --name digite_um_nome
 npx prisma generate
 
 npm run dev
+
+npx prisma migrate reset
