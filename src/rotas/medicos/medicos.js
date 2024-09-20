@@ -26,6 +26,15 @@ async function hashPassword(password) {
 router.post('/medicos', async (req, res) => {
     const { nome, CRI, sexo, dataNascimento, especialidade, email, senha } = req.body;
     try {
+        if (!nome || !CRI || !sexo || !dataNascimento || !especialidade || !email || !senha) {
+            throw new Error("Nenhum campo pode estar em branco");
+        }
+        if (await prisma.medico.findFirst({ where: { email } })) {
+            throw new Error("Esse email já está em uso");
+        }
+        if (await prisma.medico.findFirst({ where: { CRI } })) {
+            throw new Error("Esse CRI já está em uso");
+        }
         const hashedPassword = await hashPassword(senha);
         const medico = await prisma.medico.create({
             data: { nome, CRI, sexo, dataNascimento, especialidade, email, senha: hashedPassword },
@@ -33,7 +42,7 @@ router.post('/medicos', async (req, res) => {
         });
         res.json(medico);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao criar médico', error });
+        res.status(400).json({ message: 'Erro ao criar médico', error: error.message });
     }
 });
 
