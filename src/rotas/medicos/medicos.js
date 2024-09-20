@@ -38,8 +38,12 @@ router.post('/medicos', async (req, res) => {
 });
 
 router.get('/medicos', requireAuth, isAdmin, async (req, res) => {
+    const whereClause = {
+        deleted: false
+    }
     try {
         const medicos = await prisma.medico.findMany({
+            where: whereClause,
             select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
         });
         res.json(medicos);
