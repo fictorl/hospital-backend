@@ -20,6 +20,9 @@ function isAdmin(req, res, next) {
 router.post("/consultas",requireAuth,isAdmin, async(req,res)=>{
     const {idMedico,idPaciente,dataHorario} = req.body
     try {
+        if(!idMedico || !idMedico.trim() || !idPaciente || !idPaciente.trim() || !dataHorario || !dataHorario.trim()){
+            throw new Error("Nenhum campo pode estar em branco")
+        }
         const consulta = await prisma.consulta.create({
             data: {idMedico,idPaciente,dataHorario},
             include: {
@@ -40,7 +43,7 @@ router.post("/consultas",requireAuth,isAdmin, async(req,res)=>{
         });
         res.status(201).json(consulta)
     } catch (error) {
-        res.status(400).json({message: "Erro ao criar uma consulta", error})
+        res.status(400).json({message: "Erro ao criar uma consulta", error: error.message})
     }
 });
 
@@ -68,13 +71,14 @@ router.get("/consultas", requireAuth, isAdmin, async(req,res)=>{
         }
         res.status(200).json(consultas);
     } catch (error) {
-        res.status(400).json({message: "Erro ao buscar consultas", error})
+        res.status(400).json({message: "Erro ao buscar consultas", error: error.message})
     }
 })
 
 router.get("/consultas/:id", requireAuth, isAdmin, async(req,res)=>{
     const {id} = req.params;
     try {
+        if(!id) throw new Error("ID não informado")
         const consulta = await prisma.consulta.findUnique({
             where: {id},
             include: {
@@ -99,13 +103,14 @@ router.get("/consultas/:id", requireAuth, isAdmin, async(req,res)=>{
         }
         res.status(200).json(consulta);
     } catch (error) {
-        res.status(400).json({message: "Erro ao buscar consulta", error})
+        res.status(400).json({message: "Erro ao buscar consulta", error: error.message})
     }
 })
 
-router.get("/consultas/:idPaciente", requireAuth, async(req,res)=>{
+router.get("/consultas/pacientes/:idPaciente", requireAuth, async(req,res)=>{
+    const {idPaciente} = req.params
     try {
-        const {idPaciente} = req.params
+        if(!idPaciente) throw new Error("ID do paciente não informado")
         const consultas = await prisma.consulta.findMany({
             where: idPaciente,
             include: {
@@ -129,13 +134,14 @@ router.get("/consultas/:idPaciente", requireAuth, async(req,res)=>{
         }
         res.status(200).json(consulta);
     } catch (error) {
-        res.status(400).json({message: "Erro ao buscar consulta", error})
+        res.status(400).json({message: "Erro ao buscar consulta", error: error.message})
     }
 });
 
-router.get("/consultas/:idMedico", requireAuth, async(req,res)=>{
+router.get("/consultas/medicos/:idMedico", requireAuth, async(req,res)=>{
+    const {idMedico} = req.params
     try {
-        const {idMedico} = req.params
+        if(!idMedico) throw new Error("ID do médico não informado")
         const consultas = await prisma.consulta.findMany({
             where: idMedico,
             include: {
@@ -159,6 +165,6 @@ router.get("/consultas/:idMedico", requireAuth, async(req,res)=>{
         }
         res.status(200).json(consulta);
     } catch (error) {
-        res.status(400).json({message: "Erro ao buscar consulta", error})
+        res.status(400).json({message: "Erro ao buscar consulta", error: error.message})
     }
 });

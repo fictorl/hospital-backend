@@ -67,7 +67,7 @@ router.get('/pacientes', requireAuth, isAdmin, async (req, res) => {
         });
         res.json(pacientes);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao buscar pacientes', error });
+        res.status(400).json({ message: 'Erro ao buscar pacientes', error: error.message });
     }
 });
 
