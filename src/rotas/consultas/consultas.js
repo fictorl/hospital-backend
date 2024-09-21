@@ -122,7 +122,7 @@ router.get("/consultas/pacientes/:idPaciente", requireAuth, async(req,res)=>{
                 }
             }
         })
-        res.status(200).json(consulta);
+        res.status(200).json(consultas);
     } catch (error) {
         res.status(400).json({message: "Erro ao buscar consulta", error: error.message})
     }
@@ -150,7 +150,7 @@ router.get("/consultas/medicos/:idMedico", requireAuth, async(req,res)=>{
                 }
             }
         })
-        res.status(200).json(consulta);
+        res.status(200).json(consultas);
     } catch (error) {
         res.status(400).json({message: "Erro ao buscar consulta", error: error.message})
     }

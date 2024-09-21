@@ -92,11 +92,6 @@ router.get('/exames/:id', requireAuth, isAdmin, async (req, res) =>{
                 }
             }         
         })
-
-        if(!exame){
-            return res.status(404).json({message: 'Exame não encontrado'});
-        }
-
         res.status(200).json(exame);
     } catch (error) {
         res.status(400).json({ message: 'Erro ao procurar exame', error: error.message });        
@@ -125,10 +120,6 @@ router.get('/exames/medicos/:idMedico', requireAuth, isAdmin, async (req, res) =
                 }
             }         
         })
-
-        if(exames.length === 0){
-            return res.status(404).json({message: 'Lista de exames por médico não encontrada'});
-        }
         res.status(200).json(exames);
     } catch (error) {
         res.status(400).json({ message: 'Erro ao procurar exames', error: error.message });        
@@ -157,10 +148,6 @@ router.get('/exames/pacientes/:idPaciente', requireAuth, isAdmin, async (req, re
                 }
             }         
         })
-
-        if(exames.length === 0){
-            return res.status(404).json({message: 'Lista de exames por paciente não encontrada'});
-        }
 
         res.status(200).json(exames);
     } catch (error) {
