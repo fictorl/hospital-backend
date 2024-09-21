@@ -23,6 +23,9 @@ router.post("/consultas",requireAuth,isAdmin, async(req,res)=>{
         if(!idMedico || !idMedico.trim() || !idPaciente || !idPaciente.trim() || !dataHorario || !dataHorario.trim()){
             throw new Error("Nenhum campo pode estar em branco")
         }
+        if(await prisma.consulta.findFirst({where: {idMedico, idPaciente, dataHorario}})){
+            throw new Error("Consulta já existe")
+        }
         const consulta = await prisma.consulta.create({
             data: {idMedico,idPaciente,dataHorario},
             include: {
