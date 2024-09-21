@@ -4,6 +4,7 @@ const medicoRoutes = require('./rotas/medicos/medicos');
 const pacienteRoutes = require('./rotas/pacientes/pacientes');
 const consultaRoutes = require('./rotas/consultas/consultas');
 const exameRoutes = require('./rotas/exames/exames');
+const logRoutes = require('./rotas/logs/log');
 const errorHandler = require('./middleware/errorHandler');
 
 const { authenticate } = require('./authentication');
@@ -17,6 +18,7 @@ app.use(medicoRoutes);
 app.use(pacienteRoutes);
 app.use(consultaRoutes);
 app.use(exameRoutes);
+app.use(logRoutes);
 
 
 app.use(errorHandler);
