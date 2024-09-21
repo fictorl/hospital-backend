@@ -63,7 +63,7 @@ router.get('/pacientes', requireAuth, isAdmin, async (req, res) => {
     try {
         const pacientes = await prisma.paciente.findMany({
             where: whereClause,
-            select: { id: true, nome: true, CPF: true, sexo: true, dataNascimento: true, estadoCivil: true }
+            select: { id: true, nome: true, CPF: true, email: true, sexo: true, dataNascimento: true, estadoCivil: true }
         });
         res.json(pacientes);
     } catch (error) {
