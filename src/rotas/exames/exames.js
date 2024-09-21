@@ -167,3 +167,5 @@ router.get('/exames/pacientes/:idPaciente', requireAuth, isAdmin, async (req, re
         res.status(400).json({ message: 'Erro ao procurar exames', error: error.message });        
     }
 });
+
+module.exports = router

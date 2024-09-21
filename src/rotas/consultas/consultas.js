@@ -168,3 +168,5 @@ router.get("/consultas/medicos/:idMedico", requireAuth, async(req,res)=>{
         res.status(400).json({message: "Erro ao buscar consulta", error: error.message})
     }
 });
+
+module.exports = router

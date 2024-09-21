@@ -2,6 +2,8 @@ const express = require('express');
 const corsMiddleware = require("./corsConfig")
 const medicoRoutes = require('./rotas/medicos/medicos');
 const pacienteRoutes = require('./rotas/pacientes/pacientes');
+const consultaRoutes = require('./rotas/consultas/consultas');
+const exameRoutes = require('./rotas/exames/exames');
 const errorHandler = require('./middleware/errorHandler');
 
 const { authenticate } = require('./authentication');
@@ -13,6 +15,8 @@ app.use(express.json());
 app.use(corsMiddleware);
 app.use(medicoRoutes);
 app.use(pacienteRoutes);
+app.use(consultaRoutes);
+app.use(exameRoutes);
 
 
 app.use(errorHandler);
