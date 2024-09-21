@@ -105,7 +105,7 @@ router.get("/consultas/pacientes/:idPaciente", requireAuth, async(req,res)=>{
     try {
         if(!idPaciente) throw new Error("ID do paciente não informado")
         const consultas = await prisma.consulta.findMany({
-            where: idPaciente,
+            where: {idPaciente},
             include: {
                 medico: {
                     select: {
@@ -133,7 +133,7 @@ router.get("/consultas/medicos/:idMedico", requireAuth, async(req,res)=>{
     try {
         if(!idMedico) throw new Error("ID do médico não informado")
         const consultas = await prisma.consulta.findMany({
-            where: idMedico,
+            where: {idMedico},
             include: {
                 medico: {
                     select: {
