@@ -98,7 +98,7 @@ router.get('/exames/:id', requireAuth, isAdmin, async (req, res) =>{
     }
 });
 
-router.get('/exames/medicos/:idMedico', requireAuth, isAdmin, async (req, res) =>{
+router.get('/exames/medicos/:idMedico', requireAuth, async (req, res) =>{
     const { idMedico } = req.params;
     try {
         if(!idMedico) throw new Error('Nenhum campo pode estar em branco');
@@ -126,7 +126,7 @@ router.get('/exames/medicos/:idMedico', requireAuth, isAdmin, async (req, res) =
     }
 });
 
-router.get('/exames/pacientes/:idPaciente', requireAuth, isAdmin, async (req, res) =>{
+router.get('/exames/pacientes/:idPaciente', requireAuth, async (req, res) =>{
     const { idPaciente } = req.params;
     try {
         if(!idPaciente) throw new Error('Nenhum campo pode estar em branco');
