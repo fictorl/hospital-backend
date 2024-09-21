@@ -102,7 +102,10 @@ router.get("/consultas/:id", requireAuth, isAdmin, async(req,res)=>{
 
 router.get("/consultas/pacientes/:idPaciente", requireAuth, async(req,res)=>{
     const {idPaciente} = req.params
+    const userId = req.auth.id
+
     try {
+        if(userId !== idPaciente) throw new Error("Acesso negado. Você só pode acessar suas próprias consultas")
         if(!idPaciente) throw new Error("ID do paciente não informado")
         const consultas = await prisma.consulta.findMany({
             where: {idPaciente},
@@ -130,7 +133,9 @@ router.get("/consultas/pacientes/:idPaciente", requireAuth, async(req,res)=>{
 
 router.get("/consultas/medicos/:idMedico", requireAuth, async(req,res)=>{
     const {idMedico} = req.params
+    const userId = req.auth.id
     try {
+        if(userId !== idMedico) throw new Error("Acesso negado. Você só pode acessar suas próprias consultas")
         if(!idMedico) throw new Error("ID do médico não informado")
         const consultas = await prisma.consulta.findMany({
             where: {idMedico},

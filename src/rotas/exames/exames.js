@@ -100,7 +100,9 @@ router.get('/exames/:id', requireAuth, isAdmin, async (req, res) =>{
 
 router.get('/exames/medicos/:idMedico', requireAuth, async (req, res) =>{
     const { idMedico } = req.params;
+    const userId = req.auth.id;
     try {
+        if(userId !== idMedico) throw new Error('Você não tem permissão para acessar esses dados');
         if(!idMedico) throw new Error('Nenhum campo pode estar em branco');
         const exames = prisma.exame.findMany({
             where: {idMedico},
@@ -128,7 +130,9 @@ router.get('/exames/medicos/:idMedico', requireAuth, async (req, res) =>{
 
 router.get('/exames/pacientes/:idPaciente', requireAuth, async (req, res) =>{
     const { idPaciente } = req.params;
+    const userId = req.auth.id;
     try {
+        if(userId !== idPaciente) throw new Error('Você não tem permissão para acessar esses dados');
         if(!idPaciente) throw new Error('Nenhum campo pode estar em branco');
         const exames = prisma.exame.findMany({
             where: {idPaciente},
