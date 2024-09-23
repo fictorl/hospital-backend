@@ -8,6 +8,7 @@
   "scripts": {
     "dev":  "concurrently \"nodemon --watch src --exec tsx ./src/server.js\" \"npx prisma studio\" \"node ./src/seed\"",
     "build": "tsup src",
+    "start": "node dist/server.js",
     "seed": "node ./src/seed"
   },
   "author": "",
