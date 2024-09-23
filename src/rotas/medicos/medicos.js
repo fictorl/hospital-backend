@@ -5,7 +5,9 @@ const bcrypt = require('bcrypt');
 const expressJwt = require('express-jwt');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+    log: ['query', 'info', 'warn', 'error']
+  });
 const requireAuth = expressJwt.expressjwt({ secret: SECRET_KEY, algorithms: ['HS256'] });
 
 function isAdmin(req, res, next) {
@@ -24,38 +26,52 @@ async function hashPassword(password) {
 router.post('/medicos', async (req, res) => {
     const { nome, CRI, sexo, dataNascimento, especialidade, email, senha } = req.body;
     try {
-        const hashedPassword = await hashPassword(senha);
+        if (!nome || !nome.trim() || !CRI || !CRI.trim() || !sexo || !sexo.trim() || !dataNascimento || !dataNascimento.trim() || !especialidade || !especialidade.trim() || !email || !email.trim() || !senha || !senha.trim()) {
+            throw new Error("Nenhum campo pode estar em branco");
+        }
+        if (await prisma.medico.findFirst({ where: { email } })) {
+            throw new Error("Esse email já está em uso");
+        }
+        if (await prisma.medico.findFirst({ where: { CRI } })) {
+            throw new Error("Esse CRI já está em uso");
+        }
+        const hashedPassword = await hashPassword(senha.trim());
         const medico = await prisma.medico.create({
-            data: { nome, CRI, sexo, dataNascimento, especialidade, email, senha: hashedPassword },
+            data: { nome: nome.trim(), CRI: CRI.trim(), sexo: sexo.trim(), dataNascimento: dataNascimento.trim(), especialidade: especialidade.trim(), email:email.trim(), senha: hashedPassword },
             select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
         });
         res.json(medico);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao criar médico', error });
+        res.status(400).json({ message: 'Erro ao criar médico', error: error.message });
     }
 });
 
 router.get('/medicos', requireAuth, isAdmin, async (req, res) => {
+    const whereClause = {
+        deleted: false
+    }
     try {
         const medicos = await prisma.medico.findMany({
-            select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
+            where: whereClause,
+            select: { id: true, nome: true, CRI: true, email: true, sexo: true, dataNascimento: true, especialidade: true }
         });
         res.json(medicos);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao buscar médicos', error });
+        res.status(400).json({ message: 'Erro ao buscar médicos', error: error.message });
     }
 });
 
 router.get('/medicos/:id', requireAuth, isAdmin, async (req, res) => {
     const { id } = req.params;
     try {
+        if(!id) throw new Error('ID não informado');
         const medico = await prisma.medico.findUnique({
             where: { id: id },
             select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
         });
         res.json(medico);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao buscar médico', error });
+        res.status(400).json({ message: 'Erro ao buscar médico', error: error.message });
     }
 });
 
@@ -63,6 +79,8 @@ router.put('/medicos/:id', requireAuth, isAdmin, async (req, res) => {
     const { id } = req.params;
     const { nome, sexo, dataNascimento, especialidade } = req.body;
     try {
+        if(!id) throw new Error('ID não informado');
+        if(!nome || !nome.trim() || !sexo|| !sexo.trim() || !dataNascimento || !especialidade) throw new Error('Nenhum campo pode estar em branco');
         const medico = await prisma.medico.update({
             where: { id: id },
             data: { nome, sexo, dataNascimento, especialidade },
@@ -77,6 +95,7 @@ router.put('/medicos/:id', requireAuth, isAdmin, async (req, res) => {
 router.delete('/medicos/:id', requireAuth, isAdmin, async (req, res) => {
     const { id } = req.params;
     try {
+        if(!id) throw new Error('ID não informado');
         await prisma.medico.update({
             where: { id: id },
             data: { deleted: true }
@@ -95,6 +114,7 @@ router.get('/medicos/:id/consultas', requireAuth, async (req, res) => {
     }
 
     try {
+        if (!id) throw new Error('ID não informado');
         const consultas = await prisma.consulta.findMany({
             where: { idMedico: id },
             include: { paciente: true }

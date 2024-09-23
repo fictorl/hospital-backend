@@ -5,7 +5,9 @@ const bcrypt = require('bcrypt');
 const expressJwt = require('express-jwt');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+    log: ['query', 'info', 'warn', 'error']
+  });
 const requireAuth = expressJwt.expressjwt({ secret: SECRET_KEY, algorithms: ['HS256'] });
 
 async function hashPassword(password) {
@@ -25,37 +27,61 @@ router.post('/pacientes', async (req, res) => {
     const { nome, CPF, sexo, dataNascimento, estadoCivil, email, senha } = req.body;
     const hashedPassword = await hashPassword(senha);
     try {
+        if (!nome || !nome.trim() || !CPF || !CPF.trim() || !sexo || !sexo.trim() || !dataNascimento || !dataNascimento.trim() || !estadoCivil || !estadoCivil.trim() || !email || !email.trim() || !senha || !senha.trim()) {
+            throw new Error("Nenhum campo pode estar em branco");
+        }
+
+        if (await prisma.paciente.findFirst({ where: { email } })) {
+            throw new Error("Esse email já está em uso");
+        }
+
+        if (await prisma.paciente.findFirst({ where: { CPF } })) {
+            throw new Error("Esse CPF já está em uso");
+        }
         const paciente = await prisma.paciente.create({
-            data: { nome, CPF, sexo, dataNascimento, estadoCivil, email, senha: hashedPassword },
+            data: { 
+                nome: nome.trim(), 
+                CPF: CPF.trim(), 
+                sexo: sexo.trim(), 
+                dataNascimento: dataNascimento.trim(), 
+                estadoCivil: estadoCivil.trim(), 
+                email: email.trim(), 
+                senha: hashedPassword.trim() 
+            },
             select: { id: true, nome: true, CPF: true, sexo: true, dataNascimento: true, estadoCivil: true }
         });
         res.json(paciente);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao criar paciente', error });
+        res.status(400).json({ message: 'Erro ao criar paciente', error: error.message });
     }
 });
 
 router.get('/pacientes', requireAuth, isAdmin, async (req, res) => {
+    const whereClause = {
+        deleted: false
+    }
     try {
         const pacientes = await prisma.paciente.findMany({
-            select: { id: true, nome: true, CPF: true, sexo: true, dataNascimento: true, estadoCivil: true }
+            where: whereClause,
+            select: { id: true, nome: true, CPF: true, email: true, sexo: true, dataNascimento: true, estadoCivil: true }
         });
         res.json(pacientes);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao buscar pacientes', error });
+        res.status(400).json({ message: 'Erro ao buscar pacientes', error: error.message });
     }
 });
 
 router.get('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
     const { id } = req.params;
     try {
+        if(!id) throw new Error("ID não informado");
         const paciente = await prisma.paciente.findUnique({
             where: { id: id },
             select: { id: true, nome: true, CPF: true, sexo: true, dataNascimento: true, estadoCivil: true }
         });
         res.json(paciente);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao buscar paciente', error });
+        res.status(400).json({ message: 'Erro ao buscar paciente', error: error.message });
     }
 });
 
@@ -64,27 +90,35 @@ router.put('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
     const { nome, sexo, dataNascimento, estadoCivil } = req.body;
 
     try {
+        if(!id) throw new Error("ID não informado");
+        const data = {};
+        if (nome && nome.trim()) data.nome = nome.trim();
+        if (sexo && sexo.trim()) data.sexo = sexo.trim();
+        if (dataNascimento && dataNascimento.trim()) data.dataNascimento = dataNascimento.trim();
+        if (estadoCivil && estadoCivil.trim()) data.estadoCivil = estadoCivil.trim();
         const paciente = await prisma.paciente.update({
             where: { id: id },
-            data: { nome, sexo, dataNascimento, estadoCivil },
+            data: data,
             select: { id: true, nome: true, CPF: true, sexo: true, dataNascimento: true, estadoCivil: true }
         });
         res.json(paciente);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao atualizar paciente', error });
+        res.status(400).json({ message: 'Erro ao atualizar paciente', error: error.message });
     }
 });
 
 router.delete('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
     const { id } = req.params;
     try {
+        if(!id) throw new Error("ID não informado");
+        if(!await prisma.paciente.findFirst({ where: { id: id } })) throw new Error("Paciente não encontrado");
         await prisma.paciente.update({
             where: { id: id },
             data: { deleted: true }
         });
-        res.json({ message: 'Paciente deletado logicamente' });
+        res.json({ message: 'Paciente deletado' });
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao deletar paciente', error });
+        res.status(400).json({ message: 'Erro ao deletar paciente', error: error.message });
     }
 });
 
@@ -96,35 +130,33 @@ router.get('/pacientes/:id/consultas', requireAuth, async (req, res) => {
     }
 
     try {
+        if(!id) throw new Error("ID não informado");
         const consultas = await prisma.consulta.findMany({
             where: { idPaciente: id },
             include: { medico: true }
         });
         res.json(consultas);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao buscar consultas', error });
+        res.status(400).json({ message: 'Erro ao buscar consultas', error: error.message });
     }
 });
 
 router.get('/pacientes/:id/exames', requireAuth, async (req, res) => {
     const { id } = req.params;
 
-    console.log(req.auth.role);
-    console.log(req.auth.id);
-    console.log(id);
-
     if (req.auth.role !== "paciente" || String(req.auth.id) !== id) {
         return res.status(403).json({ message: `Acesso negado, apenas pacientes podem acessar seus exames.${req.auth.id}` });
     }
 
     try {
+        if(!id) throw new Error("ID não informado");
         const exames = await prisma.exame.findMany({
             where: { idPaciente: id },
             include: { medico: true }
         });
         res.json(exames);
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao buscar exames', error });
+        res.status(400).json({ message: 'Erro ao buscar exames', error: error.message });
     }
 });
 
