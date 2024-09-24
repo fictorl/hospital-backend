@@ -1,6 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
+const { v4 } = require('uuid') 
+
 
 async function main() {
     // Verifica se já existe um usuário admin
@@ -13,6 +15,7 @@ async function main() {
         const hashedPassword = await bcrypt.hash('1234', 10);
         await prisma.administrador.create({
             data: {
+                id: v4(),
                 nome: 'Admin',
                 email: 'hospital@admin',
                 senha: hashedPassword,

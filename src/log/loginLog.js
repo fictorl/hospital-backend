@@ -1,4 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
+const { v4 } = require('uuid') 
+
+
 const prisma = new PrismaClient({
     log: ['query', 'info', 'warn', 'error']
   });
@@ -6,7 +9,7 @@ export async function adicionarLog(user) {
     const date = await getDate()
     try {
         await prisma.loglogin.create({
-            data:{nome:user.nome,role:user.role,dataHorario: date }
+            data:{id: v4(),nome:user.nome,role:user.role,dataHorario: date }
         })
     } catch (error) {
         console.error('Erro ao adicionar log de login', error);

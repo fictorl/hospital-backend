@@ -3,6 +3,8 @@ const { SECRET_KEY } = require('../../config');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const expressJwt = require('express-jwt');
+const { v4 } = require('uuid') 
+
 
 const router = express.Router();
 const prisma = new PrismaClient({
@@ -27,7 +29,7 @@ router.post("/consultas",requireAuth,isAdmin, async(req,res)=>{
             throw new Error("Consulta já existe")
         }
         const consulta = await prisma.consulta.create({
-            data: {idMedico,idPaciente,dataHorario},
+            data: {id: v4(),idMedico,idPaciente,dataHorario},
             include: {
                 medico: {
                     select: {

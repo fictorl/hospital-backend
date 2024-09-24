@@ -9,12 +9,13 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Paciente {
-  id             String   @id @default(uuid())
+  id             String  @unique
   nome           String
   CPF            String   @unique
   sexo           String
@@ -29,7 +30,7 @@ model Paciente {
 }
 
 model Medico {
-  id             String   @id @default(uuid())
+  id             String  @unique
   nome           String
   CRI            String   @unique
   sexo           String
@@ -44,7 +45,7 @@ model Medico {
 }
 
 model Consulta {
-  id             String   @id @default(uuid())
+  id             String  @unique
   idMedico       String
   idPaciente     String
   dataHorario DateTime
@@ -53,7 +54,7 @@ model Consulta {
 }
 
 model Exame {
-  id             String   @id @default(uuid())
+  id             String  @unique
   idMedico       String
   idPaciente     String
   resultado      String
@@ -64,7 +65,7 @@ model Exame {
 }
 
 model Administrador {
-  id            String   @id @default(uuid())
+  id            String  @unique
   nome          String
   email         String   @unique
   senha         String
@@ -72,7 +73,7 @@ model Administrador {
 }
 
 model loglogin {
-  id            String   @id @default(uuid())
+  id            String  @unique
   nome          String
   dataHorario   String 
   role          String  
