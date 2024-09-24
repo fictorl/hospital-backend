@@ -3,6 +3,8 @@ const { SECRET_KEY } = require('../../config');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const expressJwt = require('express-jwt');
+const { v4 } = require('uuid') 
+
 
 const router = express.Router();
 const prisma = new PrismaClient({
@@ -40,6 +42,7 @@ router.post('/pacientes', async (req, res) => {
         }
         const paciente = await prisma.paciente.create({
             data: { 
+                id: v4(),
                 nome: nome.trim(), 
                 CPF: CPF.trim(), 
                 sexo: sexo.trim(), 

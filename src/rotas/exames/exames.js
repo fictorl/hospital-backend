@@ -2,7 +2,7 @@ const express = require('express');
 const { SECRET_KEY } = require('../../config');
 const { PrismaClient } = require('@prisma/client');
 const expressJwt = require('express-jwt');
-const e = require('express');
+const { v4 } = require('uuid') 
 
 const router = express.Router();
 const prisma = new PrismaClient({
@@ -22,7 +22,7 @@ router.post('/exames', requireAuth, isAdmin, async (req,res) => {
     try {
         if(!idMedico || !idPaciente || !resultado || !dataHorario || !nomeExame) throw new Error('Nenhum campo pode estar em branco');
         const exame = await prisma.exame.create({
-            data: { idMedico, idPaciente, resultado, dataHorario, nomeExame },
+            data: { id: v4(),idMedico, idPaciente, resultado, dataHorario, nomeExame },
             include: {
                 medico: {
                     select: {

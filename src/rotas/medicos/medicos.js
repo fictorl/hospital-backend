@@ -3,6 +3,8 @@ const { SECRET_KEY } = require('../../config');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const expressJwt = require('express-jwt');
+const { v4 } = require('uuid') 
+
 
 const router = express.Router();
 const prisma = new PrismaClient({
@@ -37,7 +39,7 @@ router.post('/medicos', async (req, res) => {
         }
         const hashedPassword = await hashPassword(senha.trim());
         const medico = await prisma.medico.create({
-            data: { nome: nome.trim(), CRI: CRI.trim(), sexo: sexo.trim(), dataNascimento: dataNascimento.trim(), especialidade: especialidade.trim(), email:email.trim(), senha: hashedPassword },
+            data: { id: v4(),nome: nome.trim(), CRI: CRI.trim(), sexo: sexo.trim(), dataNascimento: dataNascimento.trim(), especialidade: especialidade.trim(), email:email.trim(), senha: hashedPassword },
             select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
         });
         res.json(medico);
