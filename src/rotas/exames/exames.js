@@ -159,4 +159,21 @@ router.get('/exames/pacientes/:idPaciente', requireAuth, async (req, res) =>{
     }
 });
 
+router.put('/exames/:idExame', requireAuth, isAdmin, async (req, res) => {
+    const { idExame } = req.params;
+    const { resultado } = req.body;
+    try {
+        if(!idExame) throw new Error('ID não informado');
+        if(!resultado || !resultado.trim()) throw new Error('Nenhum campo pode estar em branco');
+        const exame = await prisma.exame.update({
+            where: { id: idExame },
+            data: { resultado },
+            select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
+        });
+        res.status(200)
+    } catch (error) {
+        res.status(400).json({ message: 'Erro ao atualizar o exame', error });
+    }
+});
+
 module.exports = router
