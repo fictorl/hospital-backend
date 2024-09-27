@@ -4,7 +4,7 @@ CREATE TABLE "Paciente" (
     "nome" TEXT NOT NULL,
     "CPF" TEXT NOT NULL,
     "sexo" TEXT NOT NULL,
-    "dataNascimento" DATETIME NOT NULL,
+    "dataNascimento" TEXT NOT NULL,
     "estadoCivil" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "senha" TEXT NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE "Medico" (
     "CRI" TEXT NOT NULL,
     "sexo" TEXT NOT NULL,
     "especialidade" TEXT NOT NULL,
-    "dataNascimento" DATETIME NOT NULL,
+    "dataNascimento" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "senha" TEXT NOT NULL,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
@@ -31,7 +31,7 @@ CREATE TABLE "Consulta" (
     "id" TEXT NOT NULL,
     "idMedico" TEXT NOT NULL,
     "idPaciente" TEXT NOT NULL,
-    "dataHorario" DATETIME NOT NULL,
+    "dataHorario" TEXT NOT NULL,
     CONSTRAINT "Consulta_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Consulta_idPaciente_fkey" FOREIGN KEY ("idPaciente") REFERENCES "Paciente" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -42,7 +42,7 @@ CREATE TABLE "Exame" (
     "idMedico" TEXT NOT NULL,
     "idPaciente" TEXT NOT NULL,
     "resultado" TEXT NOT NULL,
-    "dataHorario" DATETIME NOT NULL,
+    "dataHorario" TEXT NOT NULL,
     "nomeExame" TEXT NOT NULL,
     CONSTRAINT "Exame_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Exame_idPaciente_fkey" FOREIGN KEY ("idPaciente") REFERENCES "Paciente" ("id") ON DELETE RESTRICT ON UPDATE CASCADE

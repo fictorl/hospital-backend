@@ -46,7 +46,7 @@ router.post('/pacientes', async (req, res) => {
                 nome: nome.trim(), 
                 CPF: CPF.trim(), 
                 sexo: sexo.trim(), 
-                dataNascimento: dataNascimento.trim(), 
+                dataNascimento: dataNascimento.trim(),
                 estadoCivil: estadoCivil.trim(), 
                 email: email.trim(), 
                 senha: hashedPassword.trim() 

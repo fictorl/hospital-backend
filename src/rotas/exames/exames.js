@@ -48,7 +48,7 @@ router.post('/exames', requireAuth, isAdmin, async (req,res) => {
 
 router.get('/exames',  requireAuth, isAdmin, async (req, res) => {
     try {
-        const exames = prisma.exame.findMany({
+        const exames = await prisma.exame.findMany({
             include: {
                 medico: {
                     select: {
@@ -75,7 +75,7 @@ router.get('/exames/:id', requireAuth, isAdmin, async (req, res) =>{
     const { id } = req.params;
     try {
         if(!id) throw new Error('Nenhum campo pode estar em branco');
-        const exame = prisma.exame.findUnique({
+        const exame = await prisma.exame.findUnique({
             where: {id},
             include: {
                 medico: {
@@ -105,7 +105,7 @@ router.get('/exames/medicos/:idMedico', requireAuth, async (req, res) =>{
     try {
         if(userId !== idMedico) throw new Error('Você não tem permissão para acessar esses dados');
         if(!idMedico) throw new Error('Nenhum campo pode estar em branco');
-        const exames = prisma.exame.findMany({
+        const exames = await prisma.exame.findMany({
             where: {idMedico},
             include: {
                 medico: {
@@ -135,7 +135,7 @@ router.get('/exames/pacientes/:idPaciente', requireAuth, async (req, res) =>{
     try {
         if(userId !== idPaciente) throw new Error('Você não tem permissão para acessar esses dados');
         if(!idPaciente) throw new Error('Nenhum campo pode estar em branco');
-        const exames = prisma.exame.findMany({
+        const exames = await prisma.exame.findMany({
             where: {idPaciente},
             include: {
                 medico: {

@@ -18,7 +18,7 @@ model Paciente {
   nome           String
   CPF            String   @unique
   sexo           String
-  dataNascimento DateTime
+  dataNascimento String
   estadoCivil    String
   email          String   @unique
   senha          String
@@ -34,7 +34,7 @@ model Medico {
   CRI            String   @unique
   sexo           String
   especialidade  String   
-  dataNascimento DateTime
+  dataNascimento String
   email          String   @unique
   senha          String
   deleted        Boolean  @default(false)
@@ -47,7 +47,7 @@ model Consulta {
   id             String  @unique
   idMedico       String
   idPaciente     String
-  dataHorario DateTime
+  dataHorario    String 
   medico         Medico   @relation(fields: [idMedico], references: [id])
   paciente       Paciente @relation(fields: [idPaciente], references: [id])
 }
@@ -57,7 +57,7 @@ model Exame {
   idMedico       String
   idPaciente     String
   resultado      String
-  dataHorario    DateTime
+  dataHorario    String
   nomeExame      String
   medico         Medico   @relation(fields: [idMedico], references: [id])
   paciente       Paciente @relation(fields: [idPaciente], references: [id])
