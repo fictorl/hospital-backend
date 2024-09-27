@@ -1,7 +1,5 @@
-import cors from 'cors';
-
 const express = require('express');
-//const corsMiddleware = require("./corsConfig")
+const corsMiddleware = require("./corsConfig")
 const medicoRoutes = require('./rotas/medicos/medicos');
 const pacienteRoutes = require('./rotas/pacientes/pacientes');
 const consultaRoutes = require('./rotas/consultas/consultas');
@@ -15,8 +13,7 @@ const app = express();
 
 
 app.use(express.json());
-app.use(cors());
-//app.use(corsMiddleware);
+app.use(corsMiddleware);
 app.use(medicoRoutes);
 app.use(pacienteRoutes);
 app.use(consultaRoutes);
