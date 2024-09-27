@@ -3,7 +3,8 @@ const { SECRET_KEY } = require('../../config');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const expressJwt = require('express-jwt');
-const { v4 } = require('uuid') 
+const { v4 } = require('uuid');
+const { format } = require('date-fns');
 
 
 const router = express.Router();
@@ -38,8 +39,9 @@ router.post('/medicos', async (req, res) => {
             throw new Error("Esse CRI já está em uso");
         }
         const hashedPassword = await hashPassword(senha.trim());
+        const dataFormatada = format(new Date(dataNascimento.trim()), 'dd/MM/yyyy');
         const medico = await prisma.medico.create({
-            data: { id: v4(),nome: nome.trim(), CRI: CRI.trim(), sexo: sexo.trim(), dataNascimento: dataNascimento.trim(), especialidade: especialidade.trim(), email:email.trim(), senha: hashedPassword },
+            data: { id: v4(),nome: nome.trim(), CRI: CRI.trim(), sexo: sexo.trim(), dataNascimento: dataFormatada, especialidade: especialidade.trim(), email:email.trim(), senha: hashedPassword },
             select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
         });
         res.json(medico);
@@ -83,9 +85,10 @@ router.put('/medicos/:id', requireAuth, async (req, res) => {
     try {
         if(!id) throw new Error('ID não informado');
         if(!nome || !nome.trim() || !sexo|| !sexo.trim() || !dataNascimento || !especialidade) throw new Error('Nenhum campo pode estar em branco');
+        const dataFormatada = format(new Date(dataNascimento.trim()), 'dd/MM/yyyy');
         const medico = await prisma.medico.update({
             where: { id: id },
-            data: { nome, sexo, dataNascimento, especialidade },
+            data: { nome, sexo, dataNascimento: dataFormatada, especialidade },
             select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
         });
         res.json(medico);
