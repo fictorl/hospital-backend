@@ -77,7 +77,7 @@ router.get('/medicos/:id', requireAuth, isAdmin, async (req, res) => {
     }
 });
 
-router.put('/medicos/:id', requireAuth, isAdmin, async (req, res) => {
+router.put('/medicos/:id', requireAuth, async (req, res) => {
     const { id } = req.params;
     const { nome, sexo, dataNascimento, especialidade } = req.body;
     try {

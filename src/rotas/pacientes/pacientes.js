@@ -88,7 +88,7 @@ router.get('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
     }
 });
 
-router.put('/pacientes/:id', requireAuth, isAdmin, async (req, res) => {
+router.put('/pacientes/:id', requireAuth, async (req, res) => {
     const { id } = req.params;
     const { nome, sexo, dataNascimento, estadoCivil } = req.body;
 
