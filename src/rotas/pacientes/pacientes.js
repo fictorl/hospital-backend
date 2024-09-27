@@ -3,8 +3,7 @@ const { SECRET_KEY } = require('../../config');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const expressJwt = require('express-jwt');
-const { v4 } = require('uuid');
-const { format } = require('date-fns'); 
+const { v4 } = require('uuid'); 
 
 
 const router = express.Router();
@@ -41,14 +40,13 @@ router.post('/pacientes', async (req, res) => {
         if (await prisma.paciente.findFirst({ where: { CPF } })) {
             throw new Error("Esse CPF já está em uso");
         }
-        const dataFormatada = format(new Date(dataNascimento.trim()), 'dd/MM/yyyy');
         const paciente = await prisma.paciente.create({
             data: { 
                 id: v4(),
                 nome: nome.trim(), 
                 CPF: CPF.trim(), 
                 sexo: sexo.trim(), 
-                dataNascimento: dataFormatada,
+                dataNascimento: dataNascimento.trim(),
                 estadoCivil: estadoCivil.trim(), 
                 email: email.trim(), 
                 senha: hashedPassword.trim() 
@@ -101,10 +99,9 @@ router.put('/pacientes/:id', requireAuth, async (req, res) => {
         if (sexo && sexo.trim()) data.sexo = sexo.trim();
         if (dataNascimento && dataNascimento.trim()) data.dataNascimento = dataNascimento.trim();
         if (estadoCivil && estadoCivil.trim()) data.estadoCivil = estadoCivil.trim();
-        const dataFormatada = format(new Date(dataNascimento.trim()), 'dd/MM/yyyy');
         const paciente = await prisma.paciente.update({
             where: { id: id },
-            data: { nome, sexo, dataNascimento: dataFormatada, estadoCivil },
+            data: { nome, sexo, dataNascimento: dataNascimento, estadoCivil },
             select: { id: true, nome: true, CPF: true, sexo: true, dataNascimento: true, estadoCivil: true }
         });
         res.json(paciente);

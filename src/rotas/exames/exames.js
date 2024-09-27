@@ -3,7 +3,6 @@ const { SECRET_KEY } = require('../../config');
 const { PrismaClient } = require('@prisma/client');
 const expressJwt = require('express-jwt');
 const { v4 } = require('uuid') 
-const { format } = require('date-fns');
 
 const router = express.Router();
 const prisma = new PrismaClient({
@@ -24,10 +23,9 @@ router.post('/exames', requireAuth, isAdmin, async (req,res) => {
     try {
         if(!idMedico || !idPaciente || !resultado || !dataHorario || !nomeExame) throw new Error('Nenhum campo pode estar em branco');
         
-        const dataFormatada = format(new Date(dataHorario), 'dd/MM/yyyy HH:mm');
 
         const exame = await prisma.exame.create({
-            data: { id: v4(),idMedico, resultado, idPaciente, dataHorario: dataFormatada, nomeExame },
+            data: { id: v4(),idMedico, resultado, idPaciente, dataHorario, nomeExame },
             include: {
                 medico: {
                     select: {

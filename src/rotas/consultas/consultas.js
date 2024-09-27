@@ -29,9 +29,8 @@ router.post("/consultas",requireAuth,isAdmin, async(req,res)=>{
         if(await prisma.consulta.findFirst({where: {idMedico, idPaciente, dataHorario}})){
             throw new Error("Consulta já existe")
         }
-        const dataFormatada = format(new Date(dataHorario), 'dd/MM/yyyy HH:mm');
         const consulta = await prisma.consulta.create({
-            data: {id: v4(),idMedico,idPaciente,dataHorario: dataFormatada},
+            data: {id: v4(),idMedico,idPaciente,dataHorario},
             include: {
                 medico: {
                     select: {
