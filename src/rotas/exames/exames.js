@@ -19,9 +19,10 @@ function isAdmin(req, res, next) {
 
 router.post('/exames', requireAuth, isAdmin, async (req,res) => {
     const { idMedico, idPaciente, dataHorario, nomeExame } = req.body;
+    console.log({ idMedico, idPaciente, dataHorario, nomeExame })
     const resultado = "Pendente";
     try {
-        if(!idMedico || !idPaciente || !resultado || !dataHorario || !nomeExame) throw new Error('Nenhum campo pode estar em branco');
+        if(!idMedico || !idPaciente || !dataHorario || !nomeExame) throw new Error('Nenhum campo pode estar em branco');
         
 
         const exame = await prisma.exame.create({
