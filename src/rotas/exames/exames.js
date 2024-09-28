@@ -171,12 +171,11 @@ router.put('/exames/:idExame', requireAuth, isAdmin, async (req, res) => {
         if(!resultado || !resultado.trim()) throw new Error('Nenhum campo pode estar em branco');
         const exame = await prisma.exame.update({
             where: { id: idExame },
-            data: { resultado },
-            select: { id: true, nome: true, CRI: true, sexo: true, dataNascimento: true, especialidade: true }
+            data: { resultado }
         });
         res.status(200)
     } catch (error) {
-        res.status(400).json({ message: 'Erro ao atualizar o exame', error });
+        res.status(400).json({ message: 'Erro ao atualizar o exame', error: error.message });
     }
 });
 
