@@ -31,9 +31,7 @@ CREATE TABLE "Consulta" (
     "id" TEXT NOT NULL,
     "idMedico" TEXT NOT NULL,
     "idPaciente" TEXT NOT NULL,
-    "dataHorario" TEXT NOT NULL,
-    CONSTRAINT "Consulta_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Consulta_idPaciente_fkey" FOREIGN KEY ("idPaciente") REFERENCES "Paciente" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "dataHorario" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -43,9 +41,7 @@ CREATE TABLE "Exame" (
     "idPaciente" TEXT NOT NULL,
     "resultado" TEXT NOT NULL,
     "dataHorario" TEXT NOT NULL,
-    "nomeExame" TEXT NOT NULL,
-    CONSTRAINT "Exame_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Exame_idPaciente_fkey" FOREIGN KEY ("idPaciente") REFERENCES "Paciente" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "nomeExame" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -97,3 +93,15 @@ CREATE UNIQUE INDEX "Administrador_email_key" ON "Administrador"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "loglogin_id_key" ON "loglogin"("id");
+
+-- AddForeignKey
+ALTER TABLE "Consulta" ADD CONSTRAINT "Consulta_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Consulta" ADD CONSTRAINT "Consulta_idPaciente_fkey" FOREIGN KEY ("idPaciente") REFERENCES "Paciente"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Exame" ADD CONSTRAINT "Exame_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Exame" ADD CONSTRAINT "Exame_idPaciente_fkey" FOREIGN KEY ("idPaciente") REFERENCES "Paciente"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
